@@ -20,19 +20,21 @@ public class SelectedItemHandler {
 
     private int remainingHighlightTicks;
     private ItemStack highlightingItemStack = ItemStack.EMPTY;
+    private int highlightingHotbarSlot = -1;
     private int maxLines;
 
     public void onClientTick$End(Minecraft minecraft) {
 
         if (minecraft.player == null || minecraft.isPaused()) return;
 
-        ItemStack stack = minecraft.player.getInventory().getSelected();
-        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(stack, this.highlightingItemStack) && stack.getHoverName().equals(this.highlightingItemStack.getHoverName())) {
+        ItemStack itemStack = minecraft.player.getInventory().getSelected();
+        int selected = minecraft.player.getInventory().selected;
+        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(itemStack, this.highlightingItemStack) && itemStack.getHoverName().equals(this.highlightingItemStack.getHoverName()) && selected == this.highlightingHotbarSlot) {
 
             // item instance changes when using durability, to reflect this we need to update
-            if (this.highlightingItemStack != stack) {
+            if (this.highlightingItemStack != itemStack) {
 
-                this.highlightingItemStack = stack;
+                this.highlightingItemStack = itemStack;
                 HoverTextManager.reset();
             }
 
@@ -42,7 +44,8 @@ public class SelectedItemHandler {
             }
         } else {
 
-            this.highlightingItemStack = stack;
+            this.highlightingItemStack = itemStack;
+            this.highlightingHotbarSlot = selected;
             if (this.highlightingItemStack.isEmpty()) {
 
                 this.remainingHighlightTicks = 0;

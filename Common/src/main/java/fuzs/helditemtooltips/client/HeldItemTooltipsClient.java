@@ -7,8 +7,7 @@ import fuzs.helditemtooltips.client.handler.SelectedItemHandler;
 import fuzs.helditemtooltips.config.ClientConfig;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.event.v1.ClientTickEvents;
-import fuzs.puzzleslib.api.client.event.v1.RenderGuiElementEvents;
-import fuzs.puzzleslib.api.core.v1.context.ModLifecycleContext;
+import fuzs.puzzleslib.api.client.event.v1.renderer.RenderGuiElementEvents;
 
 public class HeldItemTooltipsClient implements ClientModConstructor {
 
@@ -23,7 +22,7 @@ public class HeldItemTooltipsClient implements ClientModConstructor {
     }
 
     @Override
-    public void onClientSetup(ModLifecycleContext context) {
+    public void onClientSetup() {
         ClientConfig config = HeldItemTooltips.CONFIG.get(ClientConfig.class);
         HoverTextManager.register(TooltipComponents.ITEM_NAME, config.itemName);
         HoverTextManager.register(TooltipComponents.ADDITIONAL, config.additional);

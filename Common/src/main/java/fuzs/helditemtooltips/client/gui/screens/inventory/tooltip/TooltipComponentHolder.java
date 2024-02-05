@@ -63,7 +63,7 @@ public class TooltipComponentHolder {
                 lines.removeIf(component -> component.getString().isEmpty());
                 this.lines = Collections.unmodifiableList(lines);
             } else {
-                this.lines = List.of();
+                this.lines = Collections.emptyList();
             }
         }
     }

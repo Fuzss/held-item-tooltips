@@ -1,5 +1,6 @@
-package fuzs.helditemtooltips.client.core;
+package fuzs.helditemtooltips.forge.client.core;
 
+import fuzs.helditemtooltips.client.core.ClientAbstractions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
