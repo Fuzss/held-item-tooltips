@@ -1,20 +1,29 @@
 package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip;
 
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.component.TooltipProvider;
 
 import java.util.List;
 
 @FunctionalInterface
 public interface TooltipComponent {
 
-    void appendTooltipLines(List<Component> lines, ItemStack stack, @Nullable Player player, TooltipFlag tooltipFlag, Style style);
+    void addToTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> tooltipLines, TooltipFlag tooltipFlag);
 
     default boolean alwaysUpdate() {
         return false;
+    }
+
+    static <T extends TooltipProvider> TooltipComponent fromProvider(DataComponentType<T> dataComponentType) {
+        return (ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> tooltipLines, TooltipFlag tooltipFlag) -> {
+            T tooltipProvider = itemStack.get(dataComponentType);
+            if (tooltipProvider != null) {
+                tooltipProvider.addToTooltip(tooltipContext, tooltipLines::add, tooltipFlag);
+            }
+        };
     }
 }

@@ -1,30 +1,21 @@
 package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import fuzs.helditemtooltips.config.TooltipComponentConfig;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.ListIterator;
 import java.util.Objects;
 
 public class TooltipComponentHolder {
-    private static final Map<TooltipComponent, ItemStack.TooltipPart> TOOLTIP_COMPONENT_TO_PART = ImmutableMap.<TooltipComponent, ItemStack.TooltipPart>builder()
-            .put(TooltipComponents.ENCHANTMENTS, ItemStack.TooltipPart.ENCHANTMENTS)
-            .put(TooltipComponents.MODIFIERS, ItemStack.TooltipPart.MODIFIERS)
-            .put(TooltipComponents.UNBREAKABLE, ItemStack.TooltipPart.UNBREAKABLE)
-            .put(TooltipComponents.ADDITIONAL, ItemStack.TooltipPart.ADDITIONAL)
-            .put(TooltipComponents.COLORING, ItemStack.TooltipPart.DYE)
-            .build();
-
     private final TooltipComponent component;
     private final TooltipComponentConfig settings;
     private List<Component> lines;
@@ -51,20 +42,32 @@ public class TooltipComponentHolder {
         this.lines = null;
     }
 
-    public void tryRebuild(ItemStack stack, @Nullable Player player) {
+    public void rebuildIfNecessary(ItemStack itemStack, Item.TooltipContext tooltipContext) {
         if (this.lines == null || this.component.alwaysUpdate()) {
-            if (!this.settings.respectHideFlags || shouldShowInTooltip(stack, this.component)) {
-                // initialize list with empty component as some mods expect the title to be present when performing index based operations on the list
-                // looking at you https://github.com/Noaaan/MythicMetals
-                List<Component> lines = Lists.newArrayList(CommonComponents.EMPTY);
-                TooltipFlag.Default tooltipFlag = this.settings.advancedTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
-                Style style = this.settings.getStyle();
-                this.component.appendTooltipLines(lines, stack, player, tooltipFlag, style);
-                lines.removeIf(component -> component.getString().isEmpty());
-                this.lines = Collections.unmodifiableList(lines);
-            } else {
-                this.lines = Collections.emptyList();
+            // initialize list with empty component as some mods expect the title to be present when performing index based operations on the list
+            // looking at you https://github.com/Noaaan/MythicMetals
+            List<Component> tooltipLines = Lists.newArrayList(CommonComponents.EMPTY);
+            TooltipFlag.Default tooltipFlag = this.settings.advancedTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
+            this.component.addToTooltip(itemStack, tooltipContext, tooltipLines, tooltipFlag);
+            ListIterator<Component> iterator = tooltipLines.listIterator();
+            // remove all empty components, and remove spaces at the beginning of components, such as armor trims
+            while (iterator.hasNext()) {
+                Component component = iterator.next();
+                if (component.getContents() instanceof PlainTextContents contents) {
+                    if (contents.text().isBlank()) {
+                        if (!component.getSiblings().isEmpty()) {
+                            iterator.set(component.getSiblings().getFirst());
+                        } else {
+                            iterator.remove();
+                        }
+                    }
+                }
             }
+            Style style = this.settings.getStyle();
+            if (style != Style.EMPTY) {
+                tooltipLines.replaceAll((Component component) -> component.copy().withStyle(style::applyTo));
+            }
+            this.lines = Collections.unmodifiableList(tooltipLines);
         }
     }
 
@@ -74,18 +77,15 @@ public class TooltipComponentHolder {
     }
 
     public List<Component> getLines() {
-        Objects.requireNonNull(this.lines, "lines is null");
-        return this.lines.subList(0, this.maxLines);
+        return this.getLinesOrThrow().subList(0, this.maxLines);
     }
 
     public int size() {
-        Objects.requireNonNull(this.lines, "lines is null");
-        return this.lines.size();
+        return this.getLinesOrThrow().size();
     }
 
-    private static boolean shouldShowInTooltip(ItemStack stack, TooltipComponent component) {
-        if (!TOOLTIP_COMPONENT_TO_PART.containsKey(component)) return true;
-        int hideFlags = stack.hasTag() && stack.getTag().contains("HideFlags", 99) ? stack.getTag().getInt("HideFlags") : 0;
-        return (hideFlags & TOOLTIP_COMPONENT_TO_PART.get(component).getMask()) == 0;
+    private List<Component> getLinesOrThrow() {
+        Objects.requireNonNull(this.lines, "lines is null");
+        return this.lines;
     }
 }

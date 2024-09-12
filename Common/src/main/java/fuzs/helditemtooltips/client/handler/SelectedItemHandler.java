@@ -6,9 +6,11 @@ import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManag
 import fuzs.helditemtooltips.config.ClientConfig;
 import fuzs.helditemtooltips.mixin.client.accessor.GuiAccessor;
 import fuzs.puzzleslib.api.event.v1.core.EventResult;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +25,7 @@ public class SelectedItemHandler {
     private int highlightingHotbarSlot = -1;
     private int maxLines;
 
-    public void onClientTick$End(Minecraft minecraft) {
+    public void onEndClientTick(Minecraft minecraft) {
 
         if (minecraft.player == null || minecraft.isPaused()) return;
 
@@ -58,7 +60,7 @@ public class SelectedItemHandler {
         }
     }
 
-    public EventResult onRenderGuiOverlay$ItemName(Minecraft minecraft, GuiGraphics guiGraphics, float tickDelta, int screenWidth, int screenHeight) {
+    public EventResult onBeforeRenderGuiLayer(Minecraft minecraft, GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 
         if (this.highlightingItemStack.isEmpty()) return EventResult.INTERRUPT;
 
@@ -70,8 +72,8 @@ public class SelectedItemHandler {
 
         final List<Component> lines = this.getTooltipLines(minecraft);
         final float currentScale = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayScale / 6.0F;
-        final int posX = this.getPosX(currentScale, screenWidth);
-        int posY = this.getPosY(currentScale, screenHeight, lines.size(), minecraft);
+        final int posX = this.getPosX(currentScale, guiGraphics.guiWidth());
+        int posY = this.getPosY(currentScale, guiGraphics.guiHeight(), lines.size(), minecraft);
 
         Font font = minecraft.font;
         guiGraphics.pose().pushPose();
@@ -125,7 +127,8 @@ public class SelectedItemHandler {
         ClientConfig clientConfig = HeldItemTooltips.CONFIG.get(ClientConfig.class);
 
         int maxLines;
-        if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem())) {
+        if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem()) ||
+                clientConfig.respectHiddenTooltip && this.highlightingItemStack.has(DataComponents.HIDE_TOOLTIP)) {
 
             maxLines = 1;
         } else {
@@ -141,7 +144,7 @@ public class SelectedItemHandler {
 
         this.maxLines = maxLines;
 
-        return HoverTextManager.getTooltipLines(this.highlightingItemStack, minecraft.player, this.maxLines);
+        return HoverTextManager.getTooltipLines(this.highlightingItemStack, minecraft.level, this.maxLines);
     }
 
     private void drawBackground(GuiGraphics guiGraphics, int posX, int posY, int alpha, List<Component> lines, Minecraft minecraft) {

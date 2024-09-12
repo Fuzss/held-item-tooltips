@@ -15,25 +15,19 @@ public class TooltipComponentConfig implements ConfigCore {
     public int priority;
     @Config(description = "Represent information for this component as if advanced tooltips were enabled independently of the actual setting.")
     public boolean advancedTooltips;
-    @Config(description = "Should this tooltip component be hidden when vanilla's respective \"HideFlags\" property is set.")
-    public boolean respectHideFlags = true;
     @Config(description = "Text formatting settings for this component's text appearance.")
     private final FormattingConfig formatting;
 
-    public static TooltipComponentConfig simple(boolean include, int ordering, int priority) {
-        return simple(include, ordering, priority, null);
+    public static TooltipComponentConfig simple(boolean defaultValue, int ordering, int priority) {
+        return new TooltipComponentConfig(defaultValue, ordering, priority, false, null);
     }
 
-    public static TooltipComponentConfig simple(boolean include, int ordering, int priority, @Nullable ChatFormatting textColor) {
-        return new TooltipComponentConfig(include, ordering, priority, false, textColor);
+    public static TooltipComponentConfig advanced(boolean defaultValue, int ordering, int priority) {
+        return new TooltipComponentConfig(defaultValue, ordering, priority, true, null);
     }
 
-    public static TooltipComponentConfig advanced(boolean include, int ordering, int priority) {
-        return new TooltipComponentConfig(include, ordering, priority, true, null);
-    }
-
-    private TooltipComponentConfig(boolean include, int ordering, int priority, boolean advancedTooltips, @Nullable ChatFormatting textColor) {
-        this.include = include;
+    private TooltipComponentConfig(boolean defaultValue, int ordering, int priority, boolean advancedTooltips, @Nullable ChatFormatting textColor) {
+        this.include = defaultValue;
         this.ordering = ordering;
         this.priority = priority;
         this.advancedTooltips = advancedTooltips;
@@ -73,7 +67,7 @@ public class TooltipComponentConfig implements ConfigCore {
             this.textColor = ChatFormatting.getByName(this.textColorRaw);
         }
 
-        public static Style toStyle(FormattingConfig formatting) {
+        static Style toStyle(FormattingConfig formatting) {
             Style style = Style.EMPTY;
             if (formatting.textColor != null) style = style.withColor(formatting.textColor);
             if (formatting.obfuscated) style = style.withObfuscated(true);
