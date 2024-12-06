@@ -13,10 +13,10 @@ public class HeldItemTooltipsClient implements ClientModConstructor {
 
     @Override
     public void onConstructMod() {
-        registerHandlers();
+        registerEventHandlers();
     }
 
-    private static void registerHandlers() {
+    private static void registerEventHandlers() {
         ClientTickEvents.END.register(SelectedItemHandler.INSTANCE::onEndClientTick);
         RenderGuiLayerEvents.before(RenderGuiLayerEvents.SELECTED_ITEM_NAME).register(SelectedItemHandler.INSTANCE::onBeforeRenderGuiLayer);
     }

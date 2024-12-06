@@ -9,10 +9,12 @@ import fuzs.puzzleslib.api.event.v1.core.EventResult;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -60,16 +62,17 @@ public class SelectedItemHandler {
         }
     }
 
-    public EventResult onBeforeRenderGuiLayer(Minecraft minecraft, GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public EventResult onBeforeRenderGuiLayer(Gui gui, GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 
         if (this.highlightingItemStack.isEmpty()) return EventResult.INTERRUPT;
 
-        minecraft.getProfiler().push("selectedItemName");
+        Profiler.get().push("selectedItemName");
 
         int alpha = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayTime == 0 ? 255 : (int) Math.min(255.0F, (float) this.remainingHighlightTicks * 255.0F / 10.0F);
 
         if (alpha <= 0) return EventResult.INTERRUPT;
 
+        Minecraft minecraft = gui.minecraft;
         final List<Component> lines = this.getTooltipLines(minecraft);
         final float currentScale = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayScale / 6.0F;
         final int posX = this.getPosX(currentScale, guiGraphics.guiWidth());
@@ -94,7 +97,7 @@ public class SelectedItemHandler {
         RenderSystem.disableBlend();
         guiGraphics.pose().popPose();
 
-        minecraft.getProfiler().pop();
+        Profiler.get().pop();
 
         return EventResult.INTERRUPT;
     }
