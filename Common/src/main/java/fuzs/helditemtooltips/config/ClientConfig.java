@@ -10,8 +10,6 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 
 public class ClientConfig implements ConfigCore {
-    static final String COMPONENTS_CATEGORY = "components";
-
     @Config(description = "Scale of held item tooltips. Works together with \"GUI Scale\" option in \"Video Settings\". A smaller scale might make room for more rows.")
     @Config.IntRange(min = 1, max = 24)
     public int displayScale = 6;
@@ -26,7 +24,12 @@ public class ClientConfig implements ConfigCore {
     @Config(description = "Maximum amount of rows to be displayed for held item tooltips.")
     @Config.IntRange(min = 1, max = 12)
     public int maxLines = 4;
-    @Config(name = "item_blacklist", description = {"Disables held item tooltips for specified items, mainly to prevent custom tooltips from overlapping.", ConfigDataSet.CONFIG_DESCRIPTION})
+    @Config(
+            name = "item_blacklist", description = {
+            "Disables held item tooltips for specified items, mainly to prevent custom tooltips from overlapping.",
+            ConfigDataSet.CONFIG_DESCRIPTION
+    }
+    )
     List<String> itemBlacklistRaw = Lists.newArrayList();
     @Config(description = "Interval in ticks after which the tooltip will be rebuilt. Some stats such as durability are rebuilt every tick regardless of this setting.")
     @Config.IntRange(min = 1)
@@ -37,34 +40,10 @@ public class ClientConfig implements ConfigCore {
     public HoverTextBackground background = HoverTextBackground.RECTANGLE;
     @Config(description = "Allow other mods to modify held item tooltip contents. Lines could be both added or changed.")
     public boolean additionalTooltipLines = false;
-    @Config(description = "Should the tooltip be hidden when the respective data component is present.")
-    public boolean respectHiddenTooltip = true;
-    @Config(category = COMPONENTS_CATEGORY, description = "Display name of the held item.")
-    public final TooltipComponentConfig itemName = TooltipComponentConfig.simple(true, 10, 100);
-    @Config(category = COMPONENTS_CATEGORY, description = "Additional information supplied by individual items such as potion effect and firework duration.")
-    public final TooltipComponentConfig additional = TooltipComponentConfig.advanced(true, 20, 90);
-    @Config(category = COMPONENTS_CATEGORY, description = "The track stored on a music disc.")
-    public final TooltipComponentConfig jukebox = TooltipComponentConfig.simple(true, 22, 45);
-    @Config(category = COMPONENTS_CATEGORY, description = "Armor trims applied to this item.")
-    public final TooltipComponentConfig trim = TooltipComponentConfig.simple(true, 25, 60);
-    @Config(category = COMPONENTS_CATEGORY, description = "All stored enchantments on this enchanted book if any are present.")
-    public final TooltipComponentConfig storedEnchantments = TooltipComponentConfig.simple(true, 27, 70);
-    @Config(category = COMPONENTS_CATEGORY, description = "All enchantments on this item if any are present.")
-    public final TooltipComponentConfig enchantments = TooltipComponentConfig.simple(true, 30, 70);
-    @Config(category = COMPONENTS_CATEGORY, description = "The color of dyed items such a leather armor.")
-    public final TooltipComponentConfig dyeColor = TooltipComponentConfig.advanced(true, 40, 40);
-    @Config(category = COMPONENTS_CATEGORY, description = "A lore tag for this item, only present on custom items.")
-    public final TooltipComponentConfig lore = TooltipComponentConfig.simple(true, 50, 50);
-    @Config(category = COMPONENTS_CATEGORY, description = "Attributes this item provides when used or equipped, like attack damage and armor protection.")
-    public final TooltipComponentConfig attribute = TooltipComponentConfig.simple(false, 60, 30);
-    @Config(category = COMPONENTS_CATEGORY, description = "Rendered when this item has the unbreakable tag giving it infinite durability.")
-    public final TooltipComponentConfig unbreakable = TooltipComponentConfig.simple(true, 70, 55);
-    @Config(category = COMPONENTS_CATEGORY, description = "Durability of this item, only shown if the item is damageable and has been used.")
-    public final TooltipComponentConfig durability = TooltipComponentConfig.simple(true, 80, 80);
-    @Config(category = COMPONENTS_CATEGORY, description = "Internal identifier of this item.")
-    public final TooltipComponentConfig identifier = TooltipComponentConfig.simple(false, 90, 20);
-    @Config(category = COMPONENTS_CATEGORY, description = "Amount of nbt tags on this item.")
-    public final TooltipComponentConfig componentCount = TooltipComponentConfig.simple(false, 100, 10);
+    @Config(description = "Should the tooltip or individual components on the tooltip be hidden when the \"minecraft:tooltip_display\" component is configured.")
+    public boolean respectTooltipDisplayComponent = true;
+    @Config(description = "Options for individual tooltip display entries.")
+    public final TooltipLinesConfig tooltipLines = new TooltipLinesConfig();
 
     public ConfigDataSet<Item> itemBlacklist;
 
@@ -74,6 +53,33 @@ public class ClientConfig implements ConfigCore {
     }
 
     public enum HoverTextBackground {
-        NONE, RECTANGLE, ADAPTIVE
+        NONE,
+        RECTANGLE,
+        ADAPTIVE
+    }
+
+    public static class TooltipLinesConfig implements ConfigCore {
+        @Config(description = "Display name of the held item.")
+        public final TooltipComponentConfig itemName = TooltipComponentConfig.simple(true, 10, 100);
+        @Config(
+                description = "Additional information supplied by individual items such as painting and smithing template information."
+        )
+        public final TooltipComponentConfig additional = TooltipComponentConfig.advanced(true, 20, 80);
+        @Config(description = "The id of a map.")
+        public final TooltipComponentConfig components = TooltipComponentConfig.simple(true, 30, 70);
+        @Config(
+                description = "Attributes this item provides when used or equipped, like attack damage and armor protection."
+        )
+        public final TooltipComponentConfig attributeModifiers = TooltipComponentConfig.simple(false, 50, 50);
+        @Config(
+                description = "Durability of this item, only shown if the item is damageable and has been used."
+        )
+        public final TooltipComponentConfig durability = TooltipComponentConfig.simple(true, 70, 90);
+        @Config(description = "Internal identifier of this item.")
+        public final TooltipComponentConfig identifier = TooltipComponentConfig.simple(false, 80, 30);
+        @Config(description = "Amount of components on this item.")
+        public final TooltipComponentConfig componentCount = TooltipComponentConfig.simple(false, 90, 20);
+        @Config(description = "A warning shown for an unavailable experimental item.")
+        public final TooltipComponentConfig disabled = TooltipComponentConfig.simple(true, 100, 10);
     }
 }

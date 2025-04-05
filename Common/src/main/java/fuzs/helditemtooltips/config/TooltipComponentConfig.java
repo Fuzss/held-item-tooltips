@@ -18,14 +18,6 @@ public class TooltipComponentConfig implements ConfigCore {
     @Config(description = "Text formatting settings for this component's text appearance.")
     private final FormattingConfig formatting;
 
-    public static TooltipComponentConfig simple(boolean defaultValue, int ordering, int priority) {
-        return new TooltipComponentConfig(defaultValue, ordering, priority, false, null);
-    }
-
-    public static TooltipComponentConfig advanced(boolean defaultValue, int ordering, int priority) {
-        return new TooltipComponentConfig(defaultValue, ordering, priority, true, null);
-    }
-
     private TooltipComponentConfig(boolean defaultValue, int ordering, int priority, boolean advancedTooltips, @Nullable ChatFormatting textColor) {
         this.include = defaultValue;
         this.ordering = ordering;
@@ -34,15 +26,43 @@ public class TooltipComponentConfig implements ConfigCore {
         this.formatting = new FormattingConfig(textColor);
     }
 
+    public static TooltipComponentConfig simple(boolean defaultValue, int ordering, int priority) {
+        return new TooltipComponentConfig(defaultValue, ordering, priority, false, null);
+    }
+
+    public static TooltipComponentConfig advanced(boolean defaultValue, int ordering, int priority) {
+        return new TooltipComponentConfig(defaultValue, ordering, priority, true, null);
+    }
+
     public Style getStyle() {
-        return FormattingConfig.toStyle(this.formatting);
+        return this.formatting.getStyle();
     }
 
     private static class FormattingConfig implements ConfigCore {
-        private static final String DEFAULT_FORMATTING = "default";
+        static final String DEFAULT_FORMATTING = "default";
 
         @Config(name = "text_color", description = "The color of this component's text.")
-        @Config.AllowedValues(values = {DEFAULT_FORMATTING, "black", "dark_blue", "dark_green", "dark_aqua", "dark_red", "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua", "red", "light_purple", "yellow", "white"})
+        @Config.AllowedValues(
+                values = {
+                        DEFAULT_FORMATTING,
+                        "black",
+                        "dark_blue",
+                        "dark_green",
+                        "dark_aqua",
+                        "dark_red",
+                        "dark_purple",
+                        "gold",
+                        "gray",
+                        "dark_gray",
+                        "blue",
+                        "green",
+                        "aqua",
+                        "red",
+                        "light_purple",
+                        "yellow",
+                        "white"
+                }
+        )
         String textColorRaw;
         @Config(description = "Should the text in this component be replaced by random characters.")
         public boolean obfuscated;
@@ -67,14 +87,14 @@ public class TooltipComponentConfig implements ConfigCore {
             this.textColor = ChatFormatting.getByName(this.textColorRaw);
         }
 
-        static Style toStyle(FormattingConfig formatting) {
+        Style getStyle() {
             Style style = Style.EMPTY;
-            if (formatting.textColor != null) style = style.withColor(formatting.textColor);
-            if (formatting.obfuscated) style = style.withObfuscated(true);
-            if (formatting.bold) style = style.withBold(true);
-            if (formatting.strikethrough) style = style.withStrikethrough(true);
-            if (formatting.underline) style = style.withUnderlined(true);
-            if (formatting.italic) style = style.withItalic(true);
+            if (this.textColor != null) style = style.withColor(this.textColor);
+            if (this.obfuscated) style = style.withObfuscated(true);
+            if (this.bold) style = style.withBold(true);
+            if (this.strikethrough) style = style.withStrikethrough(true);
+            if (this.underline) style = style.withUnderlined(true);
+            if (this.italic) style = style.withItalic(true);
             return style;
         }
     }

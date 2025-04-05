@@ -1,6 +1,6 @@
 package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip;
 
-import com.google.common.collect.Lists;
+import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component.TooltipComponent;
 import fuzs.helditemtooltips.config.TooltipComponentConfig;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -10,12 +10,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
+import java.util.*;
 
-public class TooltipComponentHolder {
+public final class TooltipComponentHolder {
     private final TooltipComponent component;
     private final TooltipComponentConfig settings;
     private List<Component> lines;
@@ -46,9 +43,10 @@ public class TooltipComponentHolder {
         if (this.lines == null || this.component.alwaysUpdate()) {
             // initialize list with empty component as some mods expect the title to be present when performing index based operations on the list
             // looking at you https://github.com/Noaaan/MythicMetals
-            List<Component> tooltipLines = Lists.newArrayList(CommonComponents.EMPTY);
-            TooltipFlag.Default tooltipFlag = this.settings.advancedTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
-            this.component.addToTooltip(itemStack, tooltipContext, tooltipLines, tooltipFlag);
+            List<Component> tooltipLines = new ArrayList<>(List.of(CommonComponents.EMPTY));
+            TooltipFlag.Default tooltipFlag =
+                    this.settings.advancedTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
+            this.component.addToTooltip(itemStack, tooltipContext, tooltipLines::add, tooltipFlag);
             ListIterator<Component> iterator = tooltipLines.listIterator();
             // remove all empty components, and remove spaces at the beginning of components, such as armor trims
             while (iterator.hasNext()) {

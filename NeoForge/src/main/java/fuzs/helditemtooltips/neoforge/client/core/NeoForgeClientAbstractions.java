@@ -13,8 +13,7 @@ import java.util.List;
 public class NeoForgeClientAbstractions implements ClientAbstractions {
 
     @Override
-    public void getTooltipLines(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType) {
-        Minecraft minecraft = Minecraft.getInstance();
-        EventHooks.onItemTooltip(itemStack, minecraft.player, tooltipLines, tooltipType, tooltipContext);
+    public void onItemTooltip(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType) {
+        EventHooks.onItemTooltip(itemStack, Minecraft.getInstance().player, tooltipLines, tooltipType, tooltipContext);
     }
 }

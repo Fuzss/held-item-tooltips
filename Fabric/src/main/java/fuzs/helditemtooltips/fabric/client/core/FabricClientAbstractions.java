@@ -12,7 +12,7 @@ import java.util.List;
 public class FabricClientAbstractions implements ClientAbstractions {
 
     @Override
-    public void getTooltipLines(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType) {
+    public void onItemTooltip(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType) {
         ItemTooltipCallback.EVENT.invoker().getTooltip(itemStack, tooltipContext, tooltipType, tooltipLines);
     }
 }

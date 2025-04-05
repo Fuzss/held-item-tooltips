@@ -1,6 +1,5 @@
 package fuzs.helditemtooltips.client.handler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import fuzs.helditemtooltips.HeldItemTooltips;
 import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManager;
 import fuzs.helditemtooltips.config.ClientConfig;
@@ -16,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
 
@@ -31,9 +31,11 @@ public class SelectedItemHandler {
 
         if (minecraft.player == null || minecraft.isPaused()) return;
 
-        ItemStack itemStack = minecraft.player.getInventory().getSelected();
-        int selected = minecraft.player.getInventory().selected;
-        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(itemStack, this.highlightingItemStack) && itemStack.getHoverName().equals(this.highlightingItemStack.getHoverName()) && selected == this.highlightingHotbarSlot) {
+        ItemStack itemStack = minecraft.player.getInventory().getSelectedItem();
+        int selectedSlot = minecraft.player.getInventory().getSelectedSlot();
+        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(itemStack, this.highlightingItemStack) &&
+                itemStack.getHoverName().equals(this.highlightingItemStack.getHoverName()) &&
+                selectedSlot == this.highlightingHotbarSlot) {
 
             // item instance changes when using durability, to reflect this we need to update
             if (this.highlightingItemStack != itemStack) {
@@ -49,7 +51,7 @@ public class SelectedItemHandler {
         } else {
 
             this.highlightingItemStack = itemStack;
-            this.highlightingHotbarSlot = selected;
+            this.highlightingHotbarSlot = selectedSlot;
             if (this.highlightingItemStack.isEmpty()) {
 
                 this.remainingHighlightTicks = 0;
@@ -68,7 +70,8 @@ public class SelectedItemHandler {
 
         Profiler.get().push("selectedItemName");
 
-        int alpha = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayTime == 0 ? 255 : (int) Math.min(255.0F, (float) this.remainingHighlightTicks * 255.0F / 10.0F);
+        int alpha = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayTime == 0 ? 255 :
+                (int) Math.min(255.0F, (float) this.remainingHighlightTicks * 255.0F / 10.0F);
 
         if (alpha <= 0) return EventResult.INTERRUPT;
 
@@ -80,8 +83,6 @@ public class SelectedItemHandler {
 
         Font font = minecraft.font;
         guiGraphics.pose().pushPose();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         guiGraphics.pose().scale(currentScale, currentScale, 1.0F);
 
         this.drawBackground(guiGraphics, posX, posY, alpha, lines, minecraft);
@@ -94,7 +95,6 @@ public class SelectedItemHandler {
         }
 
         guiGraphics.pose().scale(1.0F / currentScale, 1.0F / currentScale, 1.0F);
-        RenderSystem.disableBlend();
         guiGraphics.pose().popPose();
 
         Profiler.get().pop();
@@ -131,7 +131,9 @@ public class SelectedItemHandler {
 
         int maxLines;
         if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem()) ||
-                clientConfig.respectHiddenTooltip && this.highlightingItemStack.has(DataComponents.HIDE_TOOLTIP)) {
+                clientConfig.respectTooltipDisplayComponent &&
+                        this.highlightingItemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
+                                .hideTooltip()) {
 
             maxLines = 1;
         } else {
@@ -140,7 +142,8 @@ public class SelectedItemHandler {
             maxLines = overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) : clientConfig.maxLines;
         }
 
-        if ((clientConfig.displayTime - this.remainingHighlightTicks) % clientConfig.updateInterval == 0 || this.maxLines != maxLines) {
+        if ((clientConfig.displayTime - this.remainingHighlightTicks) % clientConfig.updateInterval == 0 ||
+                this.maxLines != maxLines) {
 
             HoverTextManager.reset();
         }
@@ -162,7 +165,11 @@ public class SelectedItemHandler {
             int maximumWidth = lines.stream().mapToInt(font::width).max().orElse(0) / 2;
             int size = lines.size();
 
-            guiGraphics.fill(posX - maximumWidth - 2, posY - 2, posX + maximumWidth + 2, posY + size * (font.lineHeight + 1) + (size > 1 ? 1 : -1) + 2, alpha << 24);
+            guiGraphics.fill(posX - maximumWidth - 2,
+                    posY - 2,
+                    posX + maximumWidth + 2,
+                    posY + size * (font.lineHeight + 1) + (size > 1 ? 1 : -1) + 2,
+                    alpha << 24);
         } else if (background == ClientConfig.HoverTextBackground.ADAPTIVE) {
 
             for (int i = 0; i < lines.size(); i++) {
@@ -173,7 +180,11 @@ public class SelectedItemHandler {
                 int top = currentWidth < previousWidth ? (i == 1 ? 1 : -1) : 2;
                 int bottom = currentWidth <= nextWidth ? (i == 0 ? 1 : -1) : 2;
 
-                guiGraphics.fill(posX - currentWidth - 2, posY - top, posX + currentWidth + 2, posY + font.lineHeight + bottom, alpha << 24);
+                guiGraphics.fill(posX - currentWidth - 2,
+                        posY - top,
+                        posX + currentWidth + 2,
+                        posY + font.lineHeight + bottom,
+                        alpha << 24);
                 posY += i == 0 ? font.lineHeight + 3 : font.lineHeight + 1;
             }
         }

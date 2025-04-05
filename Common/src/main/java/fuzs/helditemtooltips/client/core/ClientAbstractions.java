@@ -11,5 +11,5 @@ import java.util.List;
 public interface ClientAbstractions {
     ClientAbstractions INSTANCE = ServiceProviderHelper.load(ClientAbstractions.class);
 
-    void getTooltipLines(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType);
+    void onItemTooltip(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType);
 }

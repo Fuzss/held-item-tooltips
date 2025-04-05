@@ -2,6 +2,7 @@ package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip;
 
 import fuzs.helditemtooltips.HeldItemTooltips;
 import fuzs.helditemtooltips.client.core.ClientAbstractions;
+import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component.TooltipComponent;
 import fuzs.helditemtooltips.config.ClientConfig;
 import fuzs.helditemtooltips.config.TooltipComponentConfig;
 import net.minecraft.ChatFormatting;
@@ -10,15 +11,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class HoverTextManager {
-    private static final List<TooltipComponentHolder> TOOLTIP_COMPONENT_HOLDERS = Lists.newArrayList();
+    private static final List<TooltipComponentHolder> TOOLTIP_COMPONENT_HOLDERS = new ArrayList<>();
 
     public static void register(TooltipComponent tooltipComponent, TooltipComponentConfig settings) {
 
@@ -27,7 +28,9 @@ public class HoverTextManager {
 
     public static List<Component> getTooltipLines(ItemStack itemStack, @Nullable Level level, int maxLines) {
 
-        List<TooltipComponentHolder> holders = TOOLTIP_COMPONENT_HOLDERS.stream().filter(TooltipComponentHolder::include).collect(Collectors.toList());
+        List<TooltipComponentHolder> holders = TOOLTIP_COMPONENT_HOLDERS.stream()
+                .filter(TooltipComponentHolder::include)
+                .collect(Collectors.toList());
         Item.TooltipContext tooltipContext = Item.TooltipContext.of(level);
         holders.forEach(holder -> holder.rebuildIfNecessary(itemStack, tooltipContext));
         boolean includeLastLine = HeldItemTooltips.CONFIG.get(ClientConfig.class).lastLine && maxLines > 1;
@@ -49,7 +52,8 @@ public class HoverTextManager {
         maxLines = getAdditionalTooltipLines(itemStack, tooltipLines, tooltipContext, maxLines);
 
         if (includeLastLine && maxLines < 0) {
-            tooltipLines.add(Component.translatable("container.shulkerBox.more", (-1) * maxLines).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            tooltipLines.add(Component.translatable("item.container.more_items", -maxLines)
+                    .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
 
         return tooltipLines;
@@ -65,7 +69,7 @@ public class HoverTextManager {
         if (!HeldItemTooltips.CONFIG.get(ClientConfig.class).additionalTooltipLines) return maxLines;
 
         int oldSize = tooltipLines.size();
-        ClientAbstractions.INSTANCE.getTooltipLines(itemStack, tooltipLines, tooltipContext, TooltipFlag.Default.NORMAL);
+        ClientAbstractions.INSTANCE.onItemTooltip(itemStack, tooltipLines, tooltipContext, TooltipFlag.Default.NORMAL);
         if (tooltipLines.size() - oldSize > Math.max(maxLines, 0)) {
 
             tooltipLines.subList(oldSize + Math.max(maxLines, 0), tooltipLines.size()).clear();
