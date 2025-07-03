@@ -4,11 +4,9 @@ import fuzs.helditemtooltips.HeldItemTooltips;
 import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManager;
 import fuzs.helditemtooltips.config.ClientConfig;
 import fuzs.helditemtooltips.mixin.client.accessor.GuiAccessor;
-import fuzs.puzzleslib.api.event.v1.core.EventResult;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -33,9 +31,9 @@ public class SelectedItemHandler {
 
         ItemStack itemStack = minecraft.player.getInventory().getSelectedItem();
         int selectedSlot = minecraft.player.getInventory().getSelectedSlot();
-        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(itemStack, this.highlightingItemStack) &&
-                itemStack.getHoverName().equals(this.highlightingItemStack.getHoverName()) &&
-                selectedSlot == this.highlightingHotbarSlot) {
+        if (!this.highlightingItemStack.isEmpty() && ItemStack.isSameItem(itemStack, this.highlightingItemStack)
+                && itemStack.getHoverName().equals(this.highlightingItemStack.getHoverName())
+                && selectedSlot == this.highlightingHotbarSlot) {
 
             // item instance changes when using durability, to reflect this we need to update
             if (this.highlightingItemStack != itemStack) {
@@ -64,42 +62,40 @@ public class SelectedItemHandler {
         }
     }
 
-    public EventResult onBeforeRenderGuiLayer(Gui gui, GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void renderSelectedItemName(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 
-        if (this.highlightingItemStack.isEmpty()) return EventResult.INTERRUPT;
+        if (this.highlightingItemStack.isEmpty()) return;
 
         Profiler.get().push("selectedItemName");
 
         int alpha = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayTime == 0 ? 255 :
                 (int) Math.min(255.0F, (float) this.remainingHighlightTicks * 255.0F / 10.0F);
 
-        if (alpha <= 0) return EventResult.INTERRUPT;
+        if (alpha <= 0) return;
 
-        Minecraft minecraft = gui.minecraft;
-        final List<Component> lines = this.getTooltipLines(minecraft);
-        final float currentScale = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayScale / 6.0F;
-        final int posX = this.getPosX(currentScale, guiGraphics.guiWidth());
-        int posY = this.getPosY(currentScale, guiGraphics.guiHeight(), lines.size(), minecraft);
+        Minecraft minecraft = Minecraft.getInstance();
+        List<Component> tooltipLines = this.getTooltipLines(minecraft);
+        float currentScale = HeldItemTooltips.CONFIG.get(ClientConfig.class).displayScale / 6.0F;
+        int posX = this.getPosX(currentScale, guiGraphics.guiWidth());
+        int posY = this.getPosY(currentScale, guiGraphics.guiHeight(), tooltipLines.size(), minecraft);
 
         Font font = minecraft.font;
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(currentScale, currentScale, 1.0F);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(currentScale, currentScale);
 
-        this.drawBackground(guiGraphics, posX, posY, alpha, lines, minecraft);
+        this.drawBackground(guiGraphics, posX, posY, alpha, tooltipLines, minecraft);
 
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = 0; i < tooltipLines.size(); i++) {
 
-            Component component = lines.get(i);
+            Component component = tooltipLines.get(i);
             guiGraphics.drawCenteredString(font, component, posX, posY, 0xFFFFFF + (alpha << 24));
             posY += i == 0 ? font.lineHeight + 3 : font.lineHeight + 1;
         }
 
-        guiGraphics.pose().scale(1.0F / currentScale, 1.0F / currentScale, 1.0F);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().scale(1.0F / currentScale, 1.0F / currentScale);
+        guiGraphics.pose().popMatrix();
 
         Profiler.get().pop();
-
-        return EventResult.INTERRUPT;
     }
 
     private int getPosX(float currentScale, int screenWidth) {
@@ -130,10 +126,10 @@ public class SelectedItemHandler {
         ClientConfig clientConfig = HeldItemTooltips.CONFIG.get(ClientConfig.class);
 
         int maxLines;
-        if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem()) ||
-                clientConfig.respectTooltipDisplayComponent &&
-                        this.highlightingItemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
-                                .hideTooltip()) {
+        if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem())
+                || clientConfig.respectTooltipDisplayComponent
+                && this.highlightingItemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
+                .hideTooltip()) {
 
             maxLines = 1;
         } else {
@@ -142,8 +138,8 @@ public class SelectedItemHandler {
             maxLines = overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) : clientConfig.maxLines;
         }
 
-        if ((clientConfig.displayTime - this.remainingHighlightTicks) % clientConfig.updateInterval == 0 ||
-                this.maxLines != maxLines) {
+        if ((clientConfig.displayTime - this.remainingHighlightTicks) % clientConfig.updateInterval == 0
+                || this.maxLines != maxLines) {
 
             HoverTextManager.reset();
         }
