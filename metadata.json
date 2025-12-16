@@ -1,0 +1,61 @@
+{
+    "mod": {
+        "id": "helditemtooltips",
+        "group": "fuzs.helditemtooltips",
+        "name": "Held Item Tooltips",
+        "version": "21.11.0",
+        "authors": [
+            "Fuzs"
+        ],
+        "description": "See item enchantments, potion effects, shulker box contents and much more directly above your hotbar.",
+        "license": "MPL-2.0"
+    },
+    "dependencies": [
+        {
+            "name": "fabricapi",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "forgeconfigapiport",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "puzzleslib",
+            "type": "required",
+            "platforms": [
+                "fabric",
+                "neoforge"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "name": "github",
+            "slug": "helditemtooltips"
+        },
+        {
+            "name": "curseforge",
+            "slug": "held-item-tooltips",
+            "id": "852671"
+        },
+        {
+            "name": "modrinth",
+            "slug": "held-item-tooltips",
+            "id": "3wWtgZGB"
+        }
+    ],
+    "environments": {
+        "client": "required",
+        "server": "unsupported"
+    },
+    "platforms": [
+        "fabric",
+        "neoforge"
+    ]
+}

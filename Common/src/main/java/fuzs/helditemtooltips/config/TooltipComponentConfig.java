@@ -4,7 +4,7 @@ import fuzs.puzzleslib.api.config.v3.Config;
 import fuzs.puzzleslib.api.config.v3.ConfigCore;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Style;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TooltipComponentConfig implements ConfigCore {
     @Config(description = "Should this tooltip component be included when rendering held item tooltips.")
