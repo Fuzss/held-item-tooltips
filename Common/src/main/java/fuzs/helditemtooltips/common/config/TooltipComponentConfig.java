@@ -1,4 +1,4 @@
-package fuzs.helditemtooltips.config;
+package fuzs.helditemtooltips.common.config;
 
 import fuzs.puzzleslib.common.api.config.v3.Config;
 import fuzs.puzzleslib.common.api.config.v3.ConfigCore;

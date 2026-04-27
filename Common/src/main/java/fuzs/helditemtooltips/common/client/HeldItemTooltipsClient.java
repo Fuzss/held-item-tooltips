@@ -1,10 +1,10 @@
-package fuzs.helditemtooltips.client;
+package fuzs.helditemtooltips.common.client;
 
-import fuzs.helditemtooltips.HeldItemTooltips;
-import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManager;
-import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component.TooltipComponents;
-import fuzs.helditemtooltips.client.handler.SelectedItemHandler;
-import fuzs.helditemtooltips.config.ClientConfig;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
+import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.HoverTextManager;
+import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component.TooltipComponents;
+import fuzs.helditemtooltips.common.client.handler.SelectedItemHandler;
+import fuzs.helditemtooltips.common.config.ClientConfig;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.common.api.client.core.v1.context.GuiLayersContext;
 import fuzs.puzzleslib.common.api.client.event.v1.ClientTickEvents;

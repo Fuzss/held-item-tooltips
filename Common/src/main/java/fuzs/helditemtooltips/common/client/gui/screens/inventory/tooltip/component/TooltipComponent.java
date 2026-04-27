@@ -1,4 +1,4 @@
-package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component;
+package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

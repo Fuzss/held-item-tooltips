@@ -1,6 +1,6 @@
 package fuzs.helditemtooltips.neoforge.client.core;
 
-import fuzs.helditemtooltips.client.core.ClientAbstractions;
+import fuzs.helditemtooltips.common.client.core.ClientAbstractions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

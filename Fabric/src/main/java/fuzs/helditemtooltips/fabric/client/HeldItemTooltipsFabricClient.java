@@ -1,7 +1,7 @@
 package fuzs.helditemtooltips.fabric.client;
 
-import fuzs.helditemtooltips.HeldItemTooltips;
-import fuzs.helditemtooltips.client.HeldItemTooltipsClient;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
+import fuzs.helditemtooltips.common.client.HeldItemTooltipsClient;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import net.fabricmc.api.ClientModInitializer;
 

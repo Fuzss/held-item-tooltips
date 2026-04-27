@@ -1,10 +1,10 @@
-package fuzs.helditemtooltips.client.gui.screens.inventory.tooltip;
+package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip;
 
-import fuzs.helditemtooltips.HeldItemTooltips;
-import fuzs.helditemtooltips.client.core.ClientAbstractions;
-import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component.TooltipComponent;
-import fuzs.helditemtooltips.config.ClientConfig;
-import fuzs.helditemtooltips.config.TooltipComponentConfig;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
+import fuzs.helditemtooltips.common.client.core.ClientAbstractions;
+import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component.TooltipComponent;
+import fuzs.helditemtooltips.common.config.ClientConfig;
+import fuzs.helditemtooltips.common.config.TooltipComponentConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

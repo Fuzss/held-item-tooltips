@@ -1,6 +1,6 @@
 package fuzs.helditemtooltips.fabric;
 
-import fuzs.helditemtooltips.HeldItemTooltips;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import net.fabricmc.api.ModInitializer;
 

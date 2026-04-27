@@ -1,9 +1,8 @@
-package fuzs.helditemtooltips.client.handler;
+package fuzs.helditemtooltips.common.client.handler;
 
-import fuzs.helditemtooltips.HeldItemTooltips;
-import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManager;
-import fuzs.helditemtooltips.config.ClientConfig;
-import fuzs.helditemtooltips.mixin.client.accessor.GuiAccessor;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
+import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.HoverTextManager;
+import fuzs.helditemtooltips.common.config.ClientConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -134,8 +133,8 @@ public class SelectedItemHandler {
             maxLines = 1;
         } else {
 
-            int overlayMessageTime = ((GuiAccessor) minecraft.gui).helditemtooltips$getOverlayMessageTime();
-            maxLines = overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) : clientConfig.maxLines;
+            maxLines = minecraft.gui.overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) :
+                    clientConfig.maxLines;
         }
 
         if ((clientConfig.displayTime - this.remainingHighlightTicks) % clientConfig.updateInterval == 0
