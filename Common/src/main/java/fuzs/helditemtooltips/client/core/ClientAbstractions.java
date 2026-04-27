@@ -1,6 +1,6 @@
 package fuzs.helditemtooltips.client.core;
 
-import fuzs.puzzleslib.api.core.v1.ServiceProviderHelper;
+import fuzs.puzzleslib.common.api.core.v1.ServiceProviderHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

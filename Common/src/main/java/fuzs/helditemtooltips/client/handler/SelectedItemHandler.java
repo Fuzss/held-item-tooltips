@@ -7,7 +7,7 @@ import fuzs.helditemtooltips.mixin.client.accessor.GuiAccessor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -62,7 +62,7 @@ public class SelectedItemHandler {
         }
     }
 
-    public void renderSelectedItemName(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void renderSelectedItemName(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 
         if (this.highlightingItemStack.isEmpty()) return;
 
@@ -88,7 +88,7 @@ public class SelectedItemHandler {
         for (int i = 0; i < tooltipLines.size(); i++) {
 
             Component component = tooltipLines.get(i);
-            guiGraphics.drawCenteredString(font, component, posX, posY, 0xFFFFFF + (alpha << 24));
+            guiGraphics.centeredText(font, component, posX, posY, 0xFFFFFF + (alpha << 24));
             posY += i == 0 ? font.lineHeight + 3 : font.lineHeight + 1;
         }
 
@@ -149,7 +149,7 @@ public class SelectedItemHandler {
         return HoverTextManager.getTooltipLines(this.highlightingItemStack, minecraft.level, this.maxLines);
     }
 
-    private void drawBackground(GuiGraphics guiGraphics, int posX, int posY, int alpha, List<Component> lines, Minecraft minecraft) {
+    private void drawBackground(GuiGraphicsExtractor guiGraphics, int posX, int posY, int alpha, List<Component> lines, Minecraft minecraft) {
 
         ClientConfig.HoverTextBackground background = HeldItemTooltips.CONFIG.get(ClientConfig.class).background;
 

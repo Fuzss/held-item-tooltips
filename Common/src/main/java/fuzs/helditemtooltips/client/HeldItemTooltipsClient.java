@@ -5,9 +5,9 @@ import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.HoverTextManag
 import fuzs.helditemtooltips.client.gui.screens.inventory.tooltip.component.TooltipComponents;
 import fuzs.helditemtooltips.client.handler.SelectedItemHandler;
 import fuzs.helditemtooltips.config.ClientConfig;
-import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
-import fuzs.puzzleslib.api.client.core.v1.context.GuiLayersContext;
-import fuzs.puzzleslib.api.client.event.v1.ClientTickEvents;
+import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
+import fuzs.puzzleslib.common.api.client.core.v1.context.GuiLayersContext;
+import fuzs.puzzleslib.common.api.client.event.v1.ClientTickEvents;
 
 public class HeldItemTooltipsClient implements ClientModConstructor {
 

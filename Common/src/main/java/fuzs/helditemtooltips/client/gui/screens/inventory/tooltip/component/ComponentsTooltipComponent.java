@@ -29,12 +29,12 @@ public final class ComponentsTooltipComponent implements TooltipComponent {
             .withStyle(ChatFormatting.BLUE);
     private static final TooltipProviderExtractor<ItemContainerContents> CONTAINER = (ItemContainerContents itemContainerContents) -> {
         return (Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) -> {
-            // important for handling shulker boxes separately, so that our last line show the correct amount for cut off lines
-            for (ItemStack item : itemContainerContents.nonEmptyItems()) {
-                consumer.accept(Component.translatable("item.container.item_count",
-                        item.getHoverName(),
-                        item.getCount()).withStyle(ChatFormatting.GRAY));
-            }
+            // important for handling shulker boxes separately so that our last line shows the correct amount for cut-off lines
+            itemContainerContents.nonEmptyItemCopyStream().map((ItemStack itemStack) -> {
+                return Component.translatable("item.container.item_count",
+                        itemStack.getHoverName(),
+                        itemStack.getCount()).withStyle(ChatFormatting.GRAY);
+            }).forEach(consumer);
         };
     };
     private static final TooltipProviderExtractor<ArmorTrim> TRIM = (ArmorTrim armorTrim) -> {

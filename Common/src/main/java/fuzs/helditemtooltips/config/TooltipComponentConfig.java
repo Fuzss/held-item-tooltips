@@ -1,7 +1,7 @@
 package fuzs.helditemtooltips.config;
 
-import fuzs.puzzleslib.api.config.v3.Config;
-import fuzs.puzzleslib.api.config.v3.ConfigCore;
+import fuzs.puzzleslib.common.api.config.v3.Config;
+import fuzs.puzzleslib.common.api.config.v3.ConfigCore;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Style;
 import org.jspecify.annotations.Nullable;

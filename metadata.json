@@ -1,9 +1,10 @@
 {
+    "minecraft": "26.1.2",
     "mod": {
         "id": "helditemtooltips",
         "group": "fuzs.helditemtooltips",
         "name": "Held Item Tooltips",
-        "version": "21.11.0",
+        "version": "26.1.0",
         "authors": [
             "Fuzs"
         ],
@@ -36,13 +37,13 @@
     ],
     "links": [
         {
-            "name": "github",
-            "slug": "helditemtooltips"
-        },
-        {
             "name": "curseforge",
             "slug": "held-item-tooltips",
             "id": "852671"
+        },
+        {
+            "name": "github",
+            "slug": "held-item-tooltips"
         },
         {
             "name": "modrinth",
