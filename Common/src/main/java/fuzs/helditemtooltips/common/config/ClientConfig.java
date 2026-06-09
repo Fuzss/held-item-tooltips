@@ -52,20 +52,23 @@ public class ClientConfig implements ConfigCore {
 
     public static class TooltipLinesConfig implements ConfigCore {
         @Config(description = "Display name of the held item.")
-        public final TooltipComponentConfig itemName = TooltipComponentConfig.normal(true, 10, 100);
-        @Config(description = "Additional information supplied by individual items such as painting and smithing template information.")
-        public final TooltipComponentConfig additional = TooltipComponentConfig.advanced(true, 20, 80);
-        @Config(description = "The id of a map.")
-        public final TooltipComponentConfig components = TooltipComponentConfig.normal(true, 30, 70);
-        @Config(description = "Attributes this item provides when used or equipped, like attack damage and armor protection.")
-        public final TooltipComponentConfig attributeModifiers = TooltipComponentConfig.normal(false, 50, 50);
-        @Config(description = "Durability of this item, only shown if the item is damageable and has been used.")
-        public final TooltipComponentConfig durability = TooltipComponentConfig.normal(true, 70, 90);
-        @Config(description = "Internal identifier of this item.")
-        public final TooltipComponentConfig identifier = TooltipComponentConfig.normal(false, 80, 30);
-        @Config(description = "Amount of components on this item.")
-        public final TooltipComponentConfig componentCount = TooltipComponentConfig.normal(false, 90, 20);
-        @Config(description = "A warning shown for an unavailable experimental item.")
-        public final TooltipComponentConfig disabled = TooltipComponentConfig.normal(true, 100, 10);
+        public final TooltipComponentConfig itemName = new TooltipComponentConfig(true, 10, 100);
+        @Config(description = "Additional information added by individual items such as painting and smithing template information.")
+        public final TooltipComponentConfig additional = new TooltipComponentConfig(true, 20, 80, true);
+        @Config(description = "Custom information added by item components present on the held item.")
+        public final TooltipComponentConfig.TooltipContainerConfig components = new TooltipComponentConfig.TooltipContainerConfig(
+                true,
+                30,
+                70);
+        @Config(description = "Attributes the held item provides when used or equipped, like attack damage and armor protection.")
+        public final TooltipComponentConfig attributeModifiers = new TooltipComponentConfig(false, 50, 50);
+        @Config(description = "Durability of the held item. Only shown if the item is damageable and has been used.")
+        public final TooltipComponentConfig durability = new TooltipComponentConfig(true, 70, 90);
+        @Config(description = "Internal identifier of the held item.")
+        public final TooltipComponentConfig identifier = new TooltipComponentConfig(false, 80, 30);
+        @Config(description = "Amount of components on the held item.")
+        public final TooltipComponentConfig componentCount = new TooltipComponentConfig(false, 90, 20);
+        @Config(description = "A warning shown for an unavailable experimental held item.")
+        public final TooltipComponentConfig disabled = new TooltipComponentConfig(true, 100, 10);
     }
 }

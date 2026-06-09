@@ -1,18 +1,18 @@
 package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component;
 
 import com.google.common.collect.ImmutableMap;
+import fuzs.helditemtooltips.common.HeldItemTooltips;
 import fuzs.helditemtooltips.common.client.handler.SelectedItemHandler;
+import fuzs.helditemtooltips.common.config.ClientConfig;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
-import net.minecraft.world.item.AdventureModePredicate;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TooltipProvider;
@@ -20,18 +20,38 @@ import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class ComponentsTooltipComponent implements TooltipComponent {
     private static final Component UNBREAKABLE_TOOLTIP = Component.translatable("item.unbreakable")
             .withStyle(ChatFormatting.BLUE);
     private static final TooltipProviderExtractor<ItemContainerContents> CONTAINER = (ItemContainerContents itemContainerContents) -> {
         return (Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) -> {
-            // important for handling shulker boxes separately so that our last line shows the correct amount for cut-off lines
-            itemContainerContents.nonEmptyItemCopyStream().map((ItemStack itemStack) -> {
+            // Add all lines separately so that our last line shows the correct number for cut-off lines (important when handling shulker boxes).
+            Stream<ItemStack> displayItems;
+            if (HeldItemTooltips.CONFIG.get(ClientConfig.class).tooltipLines.components.combineContainerContents) {
+                Map<Holder<Item>, ItemStackTemplate> templatesByType = new LinkedHashMap<>();
+                for (ItemStackTemplate template : itemContainerContents.nonEmptyItems()) {
+                    templatesByType.merge(template.typeHolder(),
+                            template,
+                            (ItemStackTemplate previousTemplate, ItemStackTemplate updatedTemplate) -> {
+                                return previousTemplate.withCount(previousTemplate.count() + updatedTemplate.count());
+                            });
+                }
+
+                displayItems = templatesByType.values().stream().map((ItemStackTemplate template) -> {
+                    return new ItemStack(template.typeHolder(), template.count());
+                });
+            } else {
+                displayItems = itemContainerContents.nonEmptyItemCopyStream();
+            }
+
+            displayItems.map((ItemStack itemStack) -> {
                 return Component.translatable("item.container.item_count",
                         itemStack.getHoverName(),
                         itemStack.getCount()).withStyle(ChatFormatting.GRAY);

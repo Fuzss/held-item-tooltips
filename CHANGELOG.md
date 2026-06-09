@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v26.1.1-mc26.1.x] - 2026-06-09
 
+### Added
+
+- Add back `combine_container_contents` config option
+
 ### Fixed
 
 - Fix the `respect_tooltip_display` option being ignored in same cases

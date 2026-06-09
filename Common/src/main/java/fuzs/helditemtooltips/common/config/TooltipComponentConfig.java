@@ -14,37 +14,36 @@ public class TooltipComponentConfig implements ConfigCore {
     @Config(description = "Priority for rendering this tooltip. When not enough lines are available (like an item with enchantments), components with a low priority will be skipped.")
     public int priority;
     @Config(description = "Represent information for this component as if advanced tooltips were enabled independently of the actual setting.")
-    public boolean advancedTooltips;
+    public boolean advanced;
     @Config(description = "Text formatting settings for this component's text appearance.")
     private final FormattingConfig formatting = new FormattingConfig();
 
-    private TooltipComponentConfig(boolean defaultValue, int ordering, int priority, boolean advancedTooltips) {
-        this.include = defaultValue;
+    public TooltipComponentConfig(boolean include, int ordering, int priority) {
+        this(include, ordering, priority, false);
+    }
+
+    public TooltipComponentConfig(boolean include, int ordering, int priority, boolean advanced) {
+        this.include = include;
         this.ordering = ordering;
         this.priority = priority;
-        this.advancedTooltips = advancedTooltips;
-    }
-
-    /**
-     * @see TooltipFlag#NORMAL
-     */
-    public static TooltipComponentConfig normal(boolean defaultValue, int ordering, int priority) {
-        return new TooltipComponentConfig(defaultValue, ordering, priority, false);
-    }
-
-    /**
-     * @see TooltipFlag#ADVANCED
-     */
-    public static TooltipComponentConfig advanced(boolean defaultValue, int ordering, int priority) {
-        return new TooltipComponentConfig(defaultValue, ordering, priority, true);
+        this.advanced = advanced;
     }
 
     public TooltipFlag tooltipFlag() {
-        return this.advancedTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL;
+        return this.advanced ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL;
     }
 
     public Style style() {
         return this.formatting.composeStyle();
+    }
+
+    public static class TooltipContainerConfig extends TooltipComponentConfig {
+        @Config(description = "Merge entries for the same items in container items like shulker boxes.")
+        public boolean combineContainerContents = true;
+
+        public TooltipContainerConfig(boolean include, int ordering, int priority) {
+            super(include, ordering, priority);
+        }
     }
 
     private static class FormattingConfig implements ConfigCore {
