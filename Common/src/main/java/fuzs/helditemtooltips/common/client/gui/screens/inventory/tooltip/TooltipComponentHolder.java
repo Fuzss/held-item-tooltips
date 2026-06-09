@@ -4,6 +4,7 @@ import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.compone
 import fuzs.helditemtooltips.common.config.TooltipComponentConfig;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.item.Item;
@@ -49,9 +50,14 @@ public final class TooltipComponentHolder {
             while (iterator.hasNext()) {
                 Component component = iterator.next();
                 if (component.getContents() instanceof PlainTextContents contents) {
-                    if (contents.text().isBlank()) {
+                    String text = contents.text();
+                    if (text.isBlank()) {
                         if (!component.getSiblings().isEmpty()) {
-                            iterator.set(component.getSiblings().getFirst());
+                            if (!text.isEmpty()) {
+                                MutableComponent mutableComponent = Component.empty().setStyle(component.getStyle());
+                                component.getSiblings().forEach(mutableComponent::append);
+                                iterator.set(mutableComponent);
+                            }
                         } else {
                             iterator.remove();
                         }
