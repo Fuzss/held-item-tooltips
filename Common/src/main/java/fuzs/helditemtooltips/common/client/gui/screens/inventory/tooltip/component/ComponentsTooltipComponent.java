@@ -1,6 +1,7 @@
 package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component;
 
 import com.google.common.collect.ImmutableMap;
+import fuzs.helditemtooltips.common.client.handler.SelectedItemHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -80,7 +81,7 @@ public final class ComponentsTooltipComponent implements TooltipComponent {
 
     @Override
     public void addToTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
-        TooltipDisplay tooltipDisplay = itemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
+        TooltipDisplay tooltipDisplay = SelectedItemHandler.getTooltipDisplayComponent(itemStack);
         for (TypedDataComponent<?> component : itemStack.getComponents()) {
             if (tooltipDisplay.shows(component.type())) {
                 TooltipProvider tooltipProvider = TOOLTIP_PROVIDER_EXTRACTORS.getOrDefault(component.type(),

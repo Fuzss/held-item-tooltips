@@ -1,4 +1,4 @@
-package fuzs.helditemtooltips.common.client.core;
+package fuzs.helditemtooltips.common.services;
 
 import fuzs.puzzleslib.common.api.core.v1.ServiceProviderHelper;
 import net.minecraft.network.chat.Component;

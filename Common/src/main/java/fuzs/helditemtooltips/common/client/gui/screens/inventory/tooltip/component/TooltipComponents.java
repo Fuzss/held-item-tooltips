@@ -1,9 +1,9 @@
 package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component;
 
+import fuzs.helditemtooltips.common.client.handler.SelectedItemHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -20,7 +20,7 @@ public final class TooltipComponents {
         componentConsumer.accept(itemStack.getStyledHoverName());
     };
     public static final TooltipComponent ADDITIONAL = (ItemStack itemStack, Item.TooltipContext tooltipContext, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) -> {
-        TooltipDisplay tooltipDisplay = itemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
+        TooltipDisplay tooltipDisplay = SelectedItemHandler.getTooltipDisplayComponent(itemStack);
         itemStack.getItem().appendHoverText(itemStack, tooltipContext, tooltipDisplay, componentConsumer, tooltipFlag);
     };
     public static final TooltipComponent COMPONENTS = new ComponentsTooltipComponent();

@@ -1,6 +1,6 @@
-package fuzs.helditemtooltips.fabric.client.core;
+package fuzs.helditemtooltips.fabric.services;
 
-import fuzs.helditemtooltips.common.client.core.ClientAbstractions;
+import fuzs.helditemtooltips.common.services.ClientAbstractions;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

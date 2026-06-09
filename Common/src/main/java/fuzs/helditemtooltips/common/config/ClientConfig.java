@@ -24,12 +24,10 @@ public class ClientConfig implements ConfigCore {
     @Config(description = "Maximum amount of rows to be displayed for held item tooltips.")
     @Config.IntRange(min = 1, max = 12)
     public int maxLines = 4;
-    @Config(
-            name = "item_blacklist", description = {
+    @Config(name = "item_blacklist", description = {
             "Disables held item tooltips for specified items, mainly to prevent custom tooltips from overlapping.",
             ConfigDataSet.CONFIG_DESCRIPTION
-    }
-    )
+    })
     List<String> itemBlacklistRaw = Lists.newArrayList();
     @Config(description = "Interval in ticks after which the tooltip will be rebuilt. Some stats such as durability are rebuilt every tick regardless of this setting.")
     @Config.IntRange(min = 1)
@@ -41,7 +39,7 @@ public class ClientConfig implements ConfigCore {
     @Config(description = "Allow other mods to modify held item tooltip contents. Lines could be both added or changed.")
     public boolean additionalTooltipLines = false;
     @Config(description = "Should the tooltip or individual components on the tooltip be hidden when the \"minecraft:tooltip_display\" component is configured.")
-    public boolean respectTooltipDisplayComponent = true;
+    public boolean respectTooltipDisplay = true;
     @Config(description = "Options for individual tooltip display entries.")
     public final TooltipLinesConfig tooltipLines = new TooltipLinesConfig();
 
@@ -52,34 +50,22 @@ public class ClientConfig implements ConfigCore {
         this.itemBlacklist = ConfigDataSet.from(Registries.ITEM, this.itemBlacklistRaw);
     }
 
-    public enum HoverTextBackground {
-        NONE,
-        RECTANGLE,
-        ADAPTIVE
-    }
-
     public static class TooltipLinesConfig implements ConfigCore {
         @Config(description = "Display name of the held item.")
-        public final TooltipComponentConfig itemName = TooltipComponentConfig.simple(true, 10, 100);
-        @Config(
-                description = "Additional information supplied by individual items such as painting and smithing template information."
-        )
+        public final TooltipComponentConfig itemName = TooltipComponentConfig.normal(true, 10, 100);
+        @Config(description = "Additional information supplied by individual items such as painting and smithing template information.")
         public final TooltipComponentConfig additional = TooltipComponentConfig.advanced(true, 20, 80);
         @Config(description = "The id of a map.")
-        public final TooltipComponentConfig components = TooltipComponentConfig.simple(true, 30, 70);
-        @Config(
-                description = "Attributes this item provides when used or equipped, like attack damage and armor protection."
-        )
-        public final TooltipComponentConfig attributeModifiers = TooltipComponentConfig.simple(false, 50, 50);
-        @Config(
-                description = "Durability of this item, only shown if the item is damageable and has been used."
-        )
-        public final TooltipComponentConfig durability = TooltipComponentConfig.simple(true, 70, 90);
+        public final TooltipComponentConfig components = TooltipComponentConfig.normal(true, 30, 70);
+        @Config(description = "Attributes this item provides when used or equipped, like attack damage and armor protection.")
+        public final TooltipComponentConfig attributeModifiers = TooltipComponentConfig.normal(false, 50, 50);
+        @Config(description = "Durability of this item, only shown if the item is damageable and has been used.")
+        public final TooltipComponentConfig durability = TooltipComponentConfig.normal(true, 70, 90);
         @Config(description = "Internal identifier of this item.")
-        public final TooltipComponentConfig identifier = TooltipComponentConfig.simple(false, 80, 30);
+        public final TooltipComponentConfig identifier = TooltipComponentConfig.normal(false, 80, 30);
         @Config(description = "Amount of components on this item.")
-        public final TooltipComponentConfig componentCount = TooltipComponentConfig.simple(false, 90, 20);
+        public final TooltipComponentConfig componentCount = TooltipComponentConfig.normal(false, 90, 20);
         @Config(description = "A warning shown for an unavailable experimental item.")
-        public final TooltipComponentConfig disabled = TooltipComponentConfig.simple(true, 100, 10);
+        public final TooltipComponentConfig disabled = TooltipComponentConfig.normal(true, 100, 10);
     }
 }

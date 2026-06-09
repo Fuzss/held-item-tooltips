@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 
 import java.util.*;
 
@@ -41,14 +40,12 @@ public final class TooltipComponentHolder {
 
     public void rebuildIfNecessary(ItemStack itemStack, Item.TooltipContext tooltipContext) {
         if (this.lines == null || this.component.alwaysUpdate()) {
-            // initialize list with empty component as some mods expect the title to be present when performing index based operations on the list
-            // looking at you https://github.com/Noaaan/MythicMetals
+            // Initialize the list with an empty component as some mods expect the title to be present when performing index-based operations on the list.
+            // Looking at you: https://github.com/Noaaan/MythicMetals
             List<Component> tooltipLines = new ArrayList<>(List.of(CommonComponents.EMPTY));
-            TooltipFlag.Default tooltipFlag =
-                    this.settings.advancedTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
-            this.component.addToTooltip(itemStack, tooltipContext, tooltipLines::add, tooltipFlag);
+            this.component.addToTooltip(itemStack, tooltipContext, tooltipLines::add, this.settings.tooltipFlag());
             ListIterator<Component> iterator = tooltipLines.listIterator();
-            // remove all empty components, and remove spaces at the beginning of components, such as armor trims
+            // Remove all empty components and remove spaces at the beginning of components, such as armor trims.
             while (iterator.hasNext()) {
                 Component component = iterator.next();
                 if (component.getContents() instanceof PlainTextContents contents) {
@@ -61,16 +58,20 @@ public final class TooltipComponentHolder {
                     }
                 }
             }
-            Style style = this.settings.getStyle();
-            if (style != Style.EMPTY) {
-                tooltipLines.replaceAll((Component component) -> component.copy().withStyle(style::applyTo));
+
+            Style style = this.settings.style();
+            if (!style.isEmpty()) {
+                tooltipLines.replaceAll((Component component) -> {
+                    return component.copy().withStyle(style::applyTo);
+                });
             }
+
             this.lines = Collections.unmodifiableList(tooltipLines);
         }
     }
 
     public int subtractLines(int maxLines) {
-        this.maxLines = Math.min(this.size(), Math.max(maxLines, 0));
+        this.maxLines = Math.clamp(maxLines, 0, this.size());
         return maxLines - this.size();
     }
 

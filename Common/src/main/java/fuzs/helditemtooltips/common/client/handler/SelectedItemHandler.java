@@ -3,6 +3,7 @@ package fuzs.helditemtooltips.common.client.handler;
 import fuzs.helditemtooltips.common.HeldItemTooltips;
 import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.HoverTextManager;
 import fuzs.helditemtooltips.common.config.ClientConfig;
+import fuzs.helditemtooltips.common.config.HoverTextBackground;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -126,9 +127,7 @@ public class SelectedItemHandler {
 
         int maxLines;
         if (clientConfig.itemBlacklist.contains(this.highlightingItemStack.getItem())
-                || clientConfig.respectTooltipDisplayComponent
-                && this.highlightingItemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
-                .hideTooltip()) {
+                || getTooltipDisplayComponent(this.highlightingItemStack).hideTooltip()) {
 
             maxLines = 1;
         } else {
@@ -150,12 +149,12 @@ public class SelectedItemHandler {
 
     private void drawBackground(GuiGraphicsExtractor guiGraphics, int posX, int posY, int alpha, List<Component> lines, Minecraft minecraft) {
 
-        ClientConfig.HoverTextBackground background = HeldItemTooltips.CONFIG.get(ClientConfig.class).background;
+        HoverTextBackground background = HeldItemTooltips.CONFIG.get(ClientConfig.class).background;
 
         Font font = minecraft.font;
         alpha = (int) (alpha * minecraft.options.textBackgroundOpacity().get());
 
-        if (background == ClientConfig.HoverTextBackground.RECTANGLE) {
+        if (background == HoverTextBackground.RECTANGLE) {
 
             int maximumWidth = lines.stream().mapToInt(font::width).max().orElse(0) / 2;
             int size = lines.size();
@@ -165,7 +164,7 @@ public class SelectedItemHandler {
                     posX + maximumWidth + 2,
                     posY + size * (font.lineHeight + 1) + (size > 1 ? 1 : -1) + 2,
                     alpha << 24);
-        } else if (background == ClientConfig.HoverTextBackground.ADAPTIVE) {
+        } else if (background == HoverTextBackground.ADAPTIVE) {
 
             for (int i = 0; i < lines.size(); i++) {
 
@@ -186,8 +185,12 @@ public class SelectedItemHandler {
     }
 
     private static int textWidth(Font font, List<Component> lines, int index) {
-
         int clampedIndex = Mth.clamp(index, 0, lines.size() - 1);
         return clampedIndex == index ? font.width(lines.get(index)) : 0;
+    }
+
+    public static TooltipDisplay getTooltipDisplayComponent(ItemStack itemStack) {
+        return HeldItemTooltips.CONFIG.get(ClientConfig.class).respectTooltipDisplay ?
+                itemStack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT) : TooltipDisplay.DEFAULT;
     }
 }

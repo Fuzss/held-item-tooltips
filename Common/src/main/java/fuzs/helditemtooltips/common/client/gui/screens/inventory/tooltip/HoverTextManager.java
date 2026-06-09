@@ -1,10 +1,10 @@
 package fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip;
 
 import fuzs.helditemtooltips.common.HeldItemTooltips;
-import fuzs.helditemtooltips.common.client.core.ClientAbstractions;
 import fuzs.helditemtooltips.common.client.gui.screens.inventory.tooltip.component.TooltipComponent;
 import fuzs.helditemtooltips.common.config.ClientConfig;
 import fuzs.helditemtooltips.common.config.TooltipComponentConfig;
+import fuzs.helditemtooltips.common.services.ClientAbstractions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -69,7 +69,7 @@ public class HoverTextManager {
         if (!HeldItemTooltips.CONFIG.get(ClientConfig.class).additionalTooltipLines) return maxLines;
 
         int oldSize = tooltipLines.size();
-        ClientAbstractions.INSTANCE.onItemTooltip(itemStack, tooltipLines, tooltipContext, TooltipFlag.Default.NORMAL);
+        ClientAbstractions.INSTANCE.onItemTooltip(itemStack, tooltipLines, tooltipContext, TooltipFlag.NORMAL);
         if (tooltipLines.size() - oldSize > Math.max(maxLines, 0)) {
 
             tooltipLines.subList(oldSize + Math.max(maxLines, 0), tooltipLines.size()).clear();
