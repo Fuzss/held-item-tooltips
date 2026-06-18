@@ -1,2 +1,2 @@
 classTweaker    v2  official
-accessible  field   net/minecraft/client/gui/Gui    overlayMessageTime  I
+accessible  field   net/minecraft/client/gui/Hud    overlayMessageTime  I

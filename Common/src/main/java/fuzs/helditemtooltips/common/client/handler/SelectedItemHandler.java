@@ -132,7 +132,7 @@ public class SelectedItemHandler {
             maxLines = 1;
         } else {
 
-            maxLines = minecraft.gui.overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) :
+            maxLines = minecraft.gui.hud.overlayMessageTime > 0 ? (minecraft.gameMode.canHurtPlayer() ? 1 : 2) :
                     clientConfig.maxLines;
         }
 
