@@ -6,11 +6,17 @@
     "26.1.x": "maintained",
     "26.2.x": "primary"
   },
-  "properties": {
-    "distributions.curseforge.id": "852671",
-    "distributions.curseforge.slug": "held-item-tooltips",
-    "distributions.github.slug": "held-item-tooltips",
-    "distributions.modrinth.id": "3wWtgZGB",
-    "distributions.modrinth.slug": "held-item-tooltips"
+  "distributions": {
+    "curseforge": {
+      "id": "852671",
+      "slug": "held-item-tooltips"
+    },
+    "github": {
+      "slug": "held-item-tooltips"
+    },
+    "modrinth": {
+      "id": "3wWtgZGB",
+      "slug": "held-item-tooltips"
+    }
   }
 }
