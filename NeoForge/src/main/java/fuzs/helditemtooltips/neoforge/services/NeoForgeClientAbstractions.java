@@ -1,5 +1,6 @@
 package fuzs.helditemtooltips.neoforge.services;
 
+import fuzs.helditemtooltips.common.client.handler.SelectedItemHandler;
 import fuzs.helditemtooltips.common.services.ClientAbstractions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ public class NeoForgeClientAbstractions implements ClientAbstractions {
 
     @Override
     public void onItemTooltip(ItemStack itemStack, List<Component> tooltipLines, Item.TooltipContext tooltipContext, TooltipFlag tooltipType) {
-        EventHooks.onItemTooltip(itemStack, Minecraft.getInstance().player, tooltipLines, tooltipType, tooltipContext);
+        EventHooks.onItemTooltip(itemStack, Minecraft.getInstance().player, tooltipLines, tooltipType, tooltipContext,
+                SelectedItemHandler.getTooltipDisplayComponent(itemStack));
     }
 }
